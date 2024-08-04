@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
@@ -17,10 +18,6 @@ def index(request):
 
 # For user registration
 def register(request):
-    # A boolean value for telling the template
-    # whether the registration was successful.
-    # Set to False initially. Code changes value to
-    # True when registration succeeds.
     registered = False
     if request.method == 'POST':
         user_form = UserForm(request.POST)
@@ -82,29 +79,34 @@ def add_picture(request):
 # For use with the add_comments facility, which has not been completed.
 
 @login_required
-def add_comment(request, image_id):
-    new_comment = None
-    template_name = 'add_comment.html'
-    image = get_object_or_404(Picture, id=image_id)
-    comment = image.comments.filter(active=True)
-    new_comment = None
-    # Comment posted
+def photo_feed(request):
     if request.method == 'POST':
-        comment_form = CommentForm(data=request.POST)
-        if comment_form.is_valid():
-            # Create Comment object and don't save to database yet
-            new_comment = comment_form.save(commit=False)
-            # Assign the current post to the comment
-            new_comment.post = post
-            # Save the comment to the database
-            new_comment.save()
+        if 'add_picture' in request.POST:
+            picture_form = PictureForm(request.POST, request.FILES)
+            if picture_form.is_valid():
+                picture_form.save()
+                messages.success(request, 'Picture added successfully!')
+                return redirect('nowandthen:photo_feed')
+        elif 'add_comment' in request.POST:
+            image_id = request.POST.get('image_id')
+            image = get_object_or_404(Picture, id=image_id)
+            comment_form = CommentForm(request.POST)
+            if comment_form.is_valid():
+                new_comment = comment_form.save(commit=False)
+                new_comment.picture = image
+                new_comment.save()
+                messages.success(request, 'Thank you for your comment!')
+                return redirect('nowandthen:photo_feed')
     else:
+        picture_form = PictureForm()
         comment_form = CommentForm()
 
-    context = {'image': image, 'comment': comment, 'new_comment': new_comment, 'comment_form': comment_form}
-
-    return render(request, template_name, context)
-
+    pictures = Picture.objects.all()
+    return render(request, 'photo_feed.html', {
+        'pictures': pictures,
+        'picture_form': picture_form,
+        'comment_form': comment_form
+    })
 
 # For accessing the photo feed.
 def photo_feed(request):

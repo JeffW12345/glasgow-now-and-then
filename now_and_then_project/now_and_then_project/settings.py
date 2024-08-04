@@ -17,10 +17,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 print(f"Base dir {BASE_DIR}")
 # Define MEDIA_ROOT
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'glasgow_now_and_then_app/media')
 
 # URL that handles the media served from MEDIA_ROOT
 MEDIA_URL = '/media/'
+LOGIN_URL = '/login/'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -125,7 +126,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'glasgow_now_and_then_app/static'),
 ]

@@ -1,61 +1,75 @@
-<! –– This page provides a photo gallery of images submitted by users, ordered by date submitted ––>
 {% extends 'base.html' %}
 {% block body_block %}
-<br>
-<br>
-{% if pictures %}
-    <ul>
-    {% for p in pictures %}
 <div class="container">
-  <div class="row">
-    <div class="col-md-8 card mb-4  mt-3 ">
-        <!-- Card -->
+    <!-- Add Picture Form -->
+    <h1>Add a Picture</h1>
+    <form id="add_picture_form" method="post" action="{% url 'nowandthen:photo_feed' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ picture_form.as_p }}
+        <input type="submit" name="add_picture" value="Add Picture" class="btn btn-primary" />
+    </form>
 
-  <!-- Card content -->
-            <div class="card-body d-flex flex-row">
+    <!-- Display Pictures and Comments -->
+    <h2>Photo Feed</h2>
+    {% if pictures %}
+        <div class="row">
+            {% for p in pictures %}
+            <div class="col-md-8 mb-4">
+                <!-- Card -->
+                <div class="card">
+                    <div class="card-body d-flex flex-row">
+                        <div>
+                            <!-- Title of photo -->
+                            <h4 class="card-title font-weight-bold mb-2">{{ p.title }}</h4>
+                            <!-- Date photo was added -->
+                            <p class="card-text"><i class="far fa-clock pr-2"></i>{{ p.when_added }}</p>
+                        </div>
+                    </div>
 
-    <!-- Content -->
-                <div>
+                    <!-- Card image -->
+                    <div class="view overlay">
+                        <img class="card-img-top rounded-0" src="{{ p.image.url }}" alt="Card image cap">
+                        <a href="#!">
+                            <div class="mask rgba-white-slight"></div>
+                        </a>
+                    </div>
 
-      <!-- Title returns title of photo-->
-                    <h4 class="card-title font-weight-bold mb-2">{{ p.title }}</h4>
-      <!-- Subtitle returns date photo was added-->
-                    <p class="card-text"><i class="far fa-clock pr-2"></i>{{ p.when_added }}</p>
+                    <div class="card-body">
+                        <div class="collapse-content">
+                            <!-- Description contained within a collapsible card -->
+                            <p class="card-text collapse" id="collapseContent-{{ p.id }}">{{ p.description }}</p>
+                            <a class="btn btn-flat red-text p-1 my-1 mr-0 mml-1 collapsed" data-toggle="collapse" href="#collapseContent-{{ p.id }}" aria-expanded="false" aria-controls="collapseContent-{{ p.id }}">Click for description</a>
+                        </div>
+                    </div>
+
+                    <!-- Comment Form -->
+                    <div class="card-body">
+                        <h2>Have your say!</h2>
+                        <form id="comment_form_{{ p.id }}" method="post" action="{% url 'nowandthen:photo_feed' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="image_id" value="{{ p.id }}" />
+                            <div class="form-group">
+                                <textarea name="comment" rows="3" class="form-control" placeholder="Add your comment here..."></textarea>
+                            </div>
+                            <input type="submit" name="add_comment" value="Submit" class="btn btn-primary" />
+                        </form>
+
+                        <!-- Display comments for this picture -->
+                        <div>
+                            {% for comment in p.comments.all %}
+                                <p><strong>{{ comment.user.username }}:</strong> {{ comment.comment_body }}</p>
+                            {% empty %}
+                                <p>No comments yet.</p>
+                            {% endfor %}
+                        </div>
+                    </div>
                 </div>
+                <!-- End Card -->
             </div>
-
-  <!-- Card image returns image -->
-            <div class="view overlay">
-                <img class="card-img-top rounded-0" src="{{ p.image.url }}" alt="Card image cap">
-                    <a href="#!">
-                        <div class="mask rgba-white-slight"></div>
-                    </a>
-            </div>
-
-            <div class="card-body">
-                <div class="collapse-content">
-
-      <!-- Description is contained within a collapsible card -->
-                    <p class="card-text collapse" id="collapseContent">{{ p.description }}</p>
-                    <a class="btn btn-flat red-text p-1 my-1 mr-0 mml-1 collapsed" data-toggle="collapse" href="#collapseContent" aria-expanded="false" aria-controls="collapseContent">Click for description</a>
-                    <i class="fas fa-share-alt text-muted float-right p-1 my-1" data-toggle="tooltip" data-placement="top" title="Share this post"></i>
-                    <i class="fas fa-heart text-muted float-right p-1 my-1 mr-3" data-toggle="tooltip" data-placement="top" title="I like it"></i>
-
-                </div>
-            </div>
-            <div class="card-body">
-        <!-- comments -->
-                <h2>Comments and likes coming soon! Watch this space!</h2>
-                <! –– Code for adding comments to go here ––>
-            </div>
-    </div>
-  </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p><strong>There are no photographs present.</strong></p>
+    {% endif %}
 </div>
-<!-- Card -->
-    {% endfor %}
-    </ul>
-{% else %}
-    <li><strong>There are no photographs present.</strong></li>
-{% endif %}
-
 {% endblock %}
