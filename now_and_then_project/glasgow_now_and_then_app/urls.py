@@ -2,8 +2,6 @@ from django.urls import path
 
 from . import views
 
-# App specific routing.
-
 app_name = 'nowandthen'
 
 urlpatterns = [
