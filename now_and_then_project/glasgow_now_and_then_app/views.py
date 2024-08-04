@@ -1,12 +1,13 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.contrib.auth.models import User
+from django.http import HttpResponse, HttpRequest
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 
 from pip._vendor.requests import post
 
-from .models import Picture
+from .models import Picture, Comment
 from .forms import PictureForm, CommentForm, UserForm
 
 
@@ -76,50 +77,32 @@ def add_picture(request):
     return render(request, 'templates/add_picture.html', {'form': form})
 
 
-# For use with the add_comments facility, which has not been completed.
-
-@login_required
-def photo_feed(request):
-    if request.method == 'POST':
-        if 'add_picture' in request.POST:
-            picture_form = PictureForm(request.POST, request.FILES)
-            if picture_form.is_valid():
-                picture_form.save()
-                messages.success(request, 'Picture added successfully!')
-                return redirect('nowandthen:photo_feed')
-        elif 'add_comment' in request.POST:
-            image_id = request.POST.get('image_id')
+def photo_feed(request: HttpRequest) -> HttpResponse:
+    if request.method == 'POST' and 'add_comment' in request.POST:
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            image_id = form.cleaned_data['image_id']
             image = get_object_or_404(Picture, id=image_id)
-            comment_form = CommentForm(request.POST)
-            if comment_form.is_valid():
-                new_comment = comment_form.save(commit=False)
-                new_comment.picture = image
-                new_comment.save()
-                messages.success(request, 'Thank you for your comment!')
-                return redirect('nowandthen:photo_feed')
-    else:
-        picture_form = PictureForm()
-        comment_form = CommentForm()
+            comment.image = image
+            comment.user = request.user
+            comment.save()
+
+            pictures = Picture.objects.all()
+            comment_form = CommentForm()
+
+            return render(request, 'photo_feed.html', {
+                'pictures': pictures,
+                'comment_form': comment_form
+            })
 
     pictures = Picture.objects.all()
-    return render(request, 'photo_feed.html', {
-        'pictures': pictures,
-        'picture_form': picture_form,
-        'comment_form': comment_form
-    })
-
-# For accessing the photo feed.
-def photo_feed(request):
-    picture_list = Picture.objects.all().order_by('when_added')
     comment_form = CommentForm()
 
-    context_dict = {}
-    context_dict['pictures'] = picture_list
-    context_dict['comment_form'] = comment_form
-
-    return render(request, 'photo_feed.html', context=context_dict)
-
-
+    return render(request, 'photo_feed.html', {
+        'pictures': pictures,
+        'comment_form': comment_form
+    })
 # For accessing the 1970s photo feed (functionality not completed)
 def photo70(request):
     picture_list_70 = Picture.objects.filter(era=1970)

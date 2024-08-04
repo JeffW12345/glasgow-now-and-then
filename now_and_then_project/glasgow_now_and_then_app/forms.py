@@ -31,9 +31,12 @@ class ImageTagForm(forms.ModelForm):
         }
 
 class CommentForm(forms.ModelForm):
+    image_id = forms.IntegerField(widget=forms.HiddenInput())
+    user_id = forms.IntegerField(widget=forms.HiddenInput())
+
     class Meta:
         model = Comment
-        fields = ('comment_body',)
+        fields = ['comment_body']  # Only include fields that need user input
         widgets = {
             'comment_body': forms.Textarea(attrs={'cols': 80, 'rows': 5}),
         }

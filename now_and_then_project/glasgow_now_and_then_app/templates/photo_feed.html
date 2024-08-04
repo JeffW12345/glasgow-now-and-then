@@ -1,13 +1,6 @@
 {% extends 'base.html' %}
 {% block body_block %}
 <div class="container">
-    <!-- Add Picture Form -->
-    <h1>Add a Picture</h1>
-    <form id="add_picture_form" method="post" action="{% url 'nowandthen:photo_feed' %}" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ picture_form.as_p }}
-        <input type="submit" name="add_picture" value="Add Picture" class="btn btn-primary" />
-    </form>
 
     <!-- Display Pictures and Comments -->
     <h2>Photo Feed</h2>
@@ -48,13 +41,14 @@
                         <form id="comment_form_{{ p.id }}" method="post" action="{% url 'nowandthen:photo_feed' %}">
                             {% csrf_token %}
                             <input type="hidden" name="image_id" value="{{ p.id }}" />
+                            <input type="hidden" name="user_id" value="{{ user.id }}" />
                             <div class="form-group">
-                                <textarea name="comment" rows="3" class="form-control" placeholder="Add your comment here..."></textarea>
+                                <textarea name="comment_body" rows="3" class="form-control" placeholder="Add your comment here..."></textarea>
                             </div>
                             <input type="submit" name="add_comment" value="Submit" class="btn btn-primary" />
                         </form>
 
-                        <!-- Display comments for this picture -->
+                        <!-- Display comments -->
                         <div>
                             {% for comment in p.comments.all %}
                                 <p><strong>{{ comment.user.username }}:</strong> {{ comment.comment_body }}</p>
