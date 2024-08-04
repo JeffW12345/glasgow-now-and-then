@@ -14,6 +14,8 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+print(f"Base dir {BASE_DIR}")
 # Define MEDIA_ROOT
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
@@ -24,6 +26,7 @@ MEDIA_URL = '/media/'
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+# THIS IS NOT THE KEY THAT WILL BE USED IN PRODUCTION!!!
 SECRET_KEY = 'django-insecure-nh9#-&st(!__&f*(poy+q%1(57f2&&38z#7sz_t+5bf$g)&&0b'
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -122,15 +125,12 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-# Directory where static files will be collected
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-# Additional locations of static files
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'glasgow_now_and_then_app/static'),
 ]
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
