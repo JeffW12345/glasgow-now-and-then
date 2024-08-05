@@ -16,7 +16,6 @@ class Picture(models.Model):
           ('1960s_and_earlier', '1960s and earlier')
      ]
 
-     user = models.ForeignKey(User, on_delete=models.CASCADE)
      image = models.ImageField(upload_to='shared_pics')
      title = models.CharField(max_length=190, blank=True)
      description = models.CharField(max_length=1000, blank=True)
