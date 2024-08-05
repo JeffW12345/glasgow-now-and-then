@@ -96,7 +96,6 @@ def photo_feed(request: HttpRequest) -> HttpResponse:
                 image_id = form.cleaned_data['image_id']
                 user_id = form.cleaned_data['user_id']
 
-                # Check if the user has already liked this image
                 if not PictureLike.objects.filter(image_id=image_id, user_id=user_id).exists():
                     like = form.save(commit=False)
                     image = get_object_or_404(Picture, id=image_id)
@@ -110,11 +109,14 @@ def photo_feed(request: HttpRequest) -> HttpResponse:
     picture_like_form = PictureLikeForm()
     picture_likes = PictureLike.objects.all()
 
+    tags = ImageTag.objects.all()
+
     return render(request, 'photo_feed.html', {
         'pictures': pictures,
         'comment_form': comment_form,
         'picture_like_form': picture_like_form,
-        'picture_likes': picture_likes
+        'picture_likes': picture_likes,
+        'tags': tags,
     })
 # For accessing the 1970s photo feed (functionality not completed)
 def photo70(request):

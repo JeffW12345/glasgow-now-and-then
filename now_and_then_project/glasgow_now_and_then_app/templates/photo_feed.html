@@ -13,7 +13,7 @@
                             <!-- Title of photo -->
                             <h4 class="card-title font-weight-bold mb-2">{{ p.title }}</h4>
                             <!-- Date photo was added -->
-                            <p class="card-text"><i class="far fa-clock pr-2"></i>{{ p.when_added }}</p>
+                            <p class="card-text"><i class="far fa-clock pr-2"></i>Added by {{ p.user.username }} on {{ p.when_added }}</p>
                         </div>
                     </div>
 
@@ -34,6 +34,23 @@
                                 Click for description
                             </a>
                         </div>
+                    </div>
+
+                    <!-- Display Tags -->
+                    <div class="card-body">
+                        <strong>Tags:</strong>
+                        <ul>
+                            {% any_tags_for_picture tags p.id as has_tags %}
+                            {% if has_tags %}
+                                {% for tag in tags %}
+                                    {% if tag.picture.id == p.id %}
+                                        <li>{{ tag.tag_label }}</li>
+                                    {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                <li>No tags available.</li>
+                            {% endif %}
+                        </ul>
                     </div>
 
                     <!-- Display likes -->

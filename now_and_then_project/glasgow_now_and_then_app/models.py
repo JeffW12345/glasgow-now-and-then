@@ -53,7 +53,6 @@ class Comment(models.Model):
 class ImageTag(models.Model):
      picture = models.ForeignKey(Picture, on_delete=models.CASCADE, related_name='image_tags')
      tag_label = models.CharField(max_length=50, blank=True)
-
      when_added = models.DateTimeField(auto_now_add=True)
 
      def __str__(self):
