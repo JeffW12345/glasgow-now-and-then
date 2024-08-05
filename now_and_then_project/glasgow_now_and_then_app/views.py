@@ -1,10 +1,12 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.forms import modelformset_factory
 from django.http import HttpResponse, HttpRequest
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 
-from .models import Picture, PictureLike
-from .forms import PictureForm, CommentForm, UserForm, PictureLikeForm
+from .models import Picture, PictureLike, ImageTag
+from .forms import PictureForm, CommentForm, UserForm, PictureLikeForm, ImageTagForm
+
 
 def index(request):
     context_dict = {}
@@ -54,15 +56,26 @@ def user_login(request):
 
 @login_required
 def add_picture(request):
-    form = PictureForm()
+    PictureTagFormSet = modelformset_factory(ImageTag, form=ImageTagForm, extra=3)  # Adjust the extra parameter as needed
     if request.method == 'POST':
         form = PictureForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save(commit=True)
-            return redirect(reverse('index'))
+        formset = PictureTagFormSet(request.POST)
+        if form.is_valid() and formset.is_valid():
+            picture = form.save(commit=False)
+            picture.user = request.user
+            picture.save()
+            for form in formset:
+                if form.cleaned_data:
+                    tag = form.save(commit=False)
+                    tag.picture = picture
+                    tag.save()
+            return redirect(reverse('nowandthen:index'))
         else:
-            print(form.errors)
-    return render(request, 'templates/add_picture.html', {'form': form})
+            print(form.errors, formset.errors)
+    else:
+        form = PictureForm()
+        formset = PictureTagFormSet(queryset=ImageTag.objects.none())
+    return render(request, 'add_picture.html', {'form': form, 'formset': formset})
 
 @login_required
 def photo_feed(request: HttpRequest) -> HttpResponse:

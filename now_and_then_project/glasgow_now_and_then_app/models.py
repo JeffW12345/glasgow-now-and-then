@@ -16,6 +16,7 @@ class Picture(models.Model):
           ('1960s and earlier', '1960s and earlier')
      ]
 
+     user = models.ForeignKey(User, on_delete=models.CASCADE)
      image = models.ImageField(upload_to='shared_pics')
      title = models.CharField(max_length=190, blank=True)
      description = models.CharField(max_length=1000, blank=True)
@@ -51,8 +52,8 @@ class Comment(models.Model):
 
 class ImageTag(models.Model):
      picture = models.ForeignKey(Picture, on_delete=models.CASCADE, related_name='image_tags')
-
      tag_label = models.CharField(max_length=50, blank=True)
+
      when_added = models.DateTimeField(auto_now_add=True)
 
      def __str__(self):
