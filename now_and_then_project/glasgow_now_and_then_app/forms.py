@@ -50,7 +50,6 @@ class PictureLikeForm(forms.ModelForm):
         fields = ['image_id', 'user_id']
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
-
     class Meta:
         model = User
-        fields = ('username', 'email', 'password', 'first_name', 'last_name')
+        fields = ('first_name', 'last_name', 'email', 'username', 'password')
