@@ -7,8 +7,8 @@ from django.shortcuts import render, redirect, reverse, get_object_or_404
 
 from pip._vendor.requests import post
 
-from .models import Picture, Comment
-from .forms import PictureForm, CommentForm, UserForm
+from .models import Picture, Comment, PictureLike
+from .forms import PictureForm, CommentForm, UserForm, PictureLikeForm
 
 
 # For accessing the index page
@@ -78,30 +78,44 @@ def add_picture(request):
 
 
 def photo_feed(request: HttpRequest) -> HttpResponse:
-    if request.method == 'POST' and 'add_comment' in request.POST:
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            image_id = form.cleaned_data['image_id']
-            image = get_object_or_404(Picture, id=image_id)
-            comment.image = image
-            comment.user = request.user
-            comment.save()
+    if request.method == 'POST':
+        if 'add_comment' in request.POST:
+            form = CommentForm(request.POST)
+            if form.is_valid():
+                comment = form.save(commit=False)
+                image_id = form.cleaned_data['image_id']
+                image = get_object_or_404(Picture, id=image_id)
+                comment.image = image
+                comment.user = request.user
+                comment.save()
 
-            pictures = Picture.objects.all()
-            comment_form = CommentForm()
+        elif 'add_like' in request.POST:
+            form = PictureLikeForm(request.POST)
+            if form.is_valid():
+                image_id = form.cleaned_data['image_id']
+                user_id = form.cleaned_data['user_id']
 
-            return render(request, 'photo_feed.html', {
-                'pictures': pictures,
-                'comment_form': comment_form
-            })
+                # Check if the user has already liked this image
+                if not PictureLike.objects.filter(image_id=image_id, user_id=user_id).exists():
+                    like = form.save(commit=False)
+                    image = get_object_or_404(Picture, id=image_id)
+                    like.image = image
+                    like.user = request.user
+                    like.save()
 
+    # Always fetch pictures to display
     pictures = Picture.objects.all()
+
+    # Initialize forms for GET requests or rendering forms on the page
     comment_form = CommentForm()
+    picture_like_form = PictureLikeForm()
+    picture_likes = PictureLike.objects.all()
 
     return render(request, 'photo_feed.html', {
         'pictures': pictures,
-        'comment_form': comment_form
+        'comment_form': comment_form,
+        'picture_like_form': picture_like_form,
+        'picture_likes': picture_likes
     })
 # For accessing the 1970s photo feed (functionality not completed)
 def photo70(request):

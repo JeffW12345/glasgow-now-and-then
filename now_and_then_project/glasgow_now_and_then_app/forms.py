@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Picture, Comment, ImageTag
+from .models import Picture, Comment, ImageTag, PictureLike
 
 ERA_CHOICES = [
     ('Present_day', 'Present Day'),
@@ -41,6 +41,13 @@ class CommentForm(forms.ModelForm):
             'comment_body': forms.Textarea(attrs={'cols': 80, 'rows': 5}),
         }
 
+class PictureLikeForm(forms.ModelForm):
+    image_id = forms.IntegerField(widget=forms.HiddenInput())
+    user_id = forms.IntegerField(widget=forms.HiddenInput())
+
+    class Meta:
+        model = PictureLike
+        fields = ['image_id', 'user_id']
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
 

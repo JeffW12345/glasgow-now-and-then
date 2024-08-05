@@ -1,14 +1,12 @@
 {% extends 'base.html' %}
 {% block body_block %}
+{% load custom_template_tags %}
 <div class="container">
-
-    <!-- Display Pictures and Comments -->
     <h2>Photo Feed</h2>
     {% if pictures %}
         <div class="row">
             {% for p in pictures %}
-            <div class="col-md-8 mb-4">
-                <!-- Card -->
+            <div class="col-md-8 mb-4">Sorte
                 <div class="card">
                     <div class="card-body d-flex flex-row">
                         <div>
@@ -19,7 +17,6 @@
                         </div>
                     </div>
 
-                    <!-- Card image -->
                     <div class="view overlay">
                         <img class="card-img-top rounded-0" src="{{ p.image.url }}" alt="Card image cap">
                         <a href="#!">
@@ -27,14 +24,36 @@
                         </a>
                     </div>
 
+                    <!-- Description contained within a collapsible card -->
                     <div class="card-body">
                         <div class="collapse-content">
-                            <!-- Description contained within a collapsible card -->
                             <p class="card-text collapse" id="collapseContent-{{ p.id }}">{{ p.description }}</p>
-                            <a class="btn btn-flat red-text p-1 my-1 mr-0 mml-1 collapsed" data-toggle="collapse" href="#collapseContent-{{ p.id }}" aria-expanded="false" aria-controls="collapseContent-{{ p.id }}">Click for description</a>
+                            <a class="btn btn-flat red-text p-1 my-1 mr-0 mml-1 collapsed" data-toggle="collapse"
+                               href="#collapseContent-{{ p.id }}" aria-expanded="false"
+                               aria-controls="collapseContent-{{ p.id }}">
+                                Click for description
+                            </a>
                         </div>
                     </div>
 
+                    <!-- Display likes -->
+                    <div class="card-body">
+                        <p>This picture has {{ p.likes_count }} likes</p>
+                    </div>
+
+                    <!-- Add likes -->
+                    <div class="card-body">
+                        {% if picture_likes|user_liked_picture:user %}
+                            <p>You already liked this picture.</p>
+                        {% else %}
+                            <form id="user_likes_form" method="post" action="{% url 'nowandthen:photo_feed' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="image_id" value="{{ p.id }}" />
+                                <input type="hidden" name="user_id" value="{{ user.id }}" />
+                                <input type="submit" name="add_like" value="Click here to like" class="btn btn-primary" />
+                            </form>
+                        {% endif %}
+                    </div>
                     <!-- Comment Form -->
                     <div class="card-body">
                         <h2>Have your say!</h2>

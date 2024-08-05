@@ -23,6 +23,12 @@ class Picture(models.Model):
 
      when_added = models.DateTimeField(auto_now_add=True)
 
+     def has_picture_already_been_liked_by_user(self, usr):
+          return PictureLike.objects.filter(user=usr, image=self).exists()
+     def likes_count(self):
+          return PictureLike.objects.filter(image=self).count()
+
+
      def __str__(self):
           return self.title
 
