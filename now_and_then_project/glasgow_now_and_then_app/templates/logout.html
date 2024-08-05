@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title_block %}
+    Log out
+{% endblock %}
+
+{% block body_block %}
+    <h1>Log out</h1>
+    <p>You have been successfully logged out.</p>
+    <a href="{% url 'nowandthen:login' %}" class="btn btn-primary">Log in Again</a>
+    <a href="{% url 'nowandthen:index' %}" class="btn btn-secondary">Back to Home Page</a>
+{% endblock %}

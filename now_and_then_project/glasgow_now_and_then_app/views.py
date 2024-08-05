@@ -1,23 +1,15 @@
-from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpRequest
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 
-from pip._vendor.requests import post
-
-from .models import Picture, Comment, PictureLike
+from .models import Picture, PictureLike
 from .forms import PictureForm, CommentForm, UserForm, PictureLikeForm
 
-
-# For accessing the index page
 def index(request):
     context_dict = {}
     return render(request, 'index.html', context=context_dict)
 
-
-# For user registration
 def register(request):
     registered = False
     if request.method == 'POST':
@@ -41,8 +33,6 @@ def register(request):
                   context={'user_form': user_form,
                            'registered': registered})
 
-
-# For user logins
 def user_login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -62,8 +52,6 @@ def user_login(request):
     else:
         return render(request, 'login.html')
 
-
-# For adding pictures.
 @login_required
 def add_picture(request):
     form = PictureForm()
@@ -76,7 +64,7 @@ def add_picture(request):
             print(form.errors)
     return render(request, 'templates/add_picture.html', {'form': form})
 
-
+@login_required
 def photo_feed(request: HttpRequest) -> HttpResponse:
     if request.method == 'POST':
         if 'add_comment' in request.POST:
@@ -103,10 +91,8 @@ def photo_feed(request: HttpRequest) -> HttpResponse:
                     like.user = request.user
                     like.save()
 
-    # Always fetch pictures to display
     pictures = Picture.objects.all()
 
-    # Initialize forms for GET requests or rendering forms on the page
     comment_form = CommentForm()
     picture_like_form = PictureLikeForm()
     picture_likes = PictureLike.objects.all()
@@ -147,15 +133,10 @@ def photo10(request):
     return render(request, '2010.html', context=context_dict)
 
 
-# For search results (functionality not completed)
 def search_results(request):
     return render(request, 'search_results.html')
 
-
-# For logging out.
 @login_required
 def user_logout(request):
-    # Since we know the user is logged in, we can now just log them out.
     logout(request)
-    # Take the user back to the homepage.
-    return redirect(reverse('templates:index'))
+    return render(request, 'logout.html')
