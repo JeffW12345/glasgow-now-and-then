@@ -22,6 +22,24 @@
         body {
             background-color: bisque;
         }
+        .dropdown-menu {
+            background-color: #f8f9fa; /* Light background for dropdown */
+            border: 1px solid #ddd; /* Light border around dropdown */
+            border-radius: 0.25rem; /* Rounded corners */
+            box-shadow: 0px 4px 6px rgba(0,0,0,0.1); /* Slight shadow */
+        }
+        .dropdown-menu a {
+            color: #007bff; /* Link color */
+            padding: 0.5rem 1rem; /* Padding inside dropdown items */
+            text-decoration: none;
+        }
+        .dropdown-menu a:hover {
+            background-color: #e9ecef; /* Hover background color */
+            color: #0056b3; /* Hover link color */
+        }
+        .dropdown-toggle::after {
+            display: none; /* Remove default arrow */
+        }
     </style>
     {% endblock %}
 
@@ -45,22 +63,31 @@
         <ul class="navigation">
             {% if user.is_authenticated %}
                 <li>
-                    <form action="{% url 'nowandthen:search_results' %}" method="get">
-                        <input name="q" type="text" placeholder="Search...">
+                    <form action="{% url 'nowandthen:search_results' %}" method="get" class="form-inline">
+                        <input name="q" type="text" class="form-control mr-2" placeholder="Search for photo tags...">
+                        <button type="submit" class="btn btn-primary">Search</button>
                     </form>
                 </li>
                 <li class="dropdown">
-                    <button class="dropbtn">Choose A Decade</button>
-                    <div class="dropdown-content">
-                        <a href="{% url 'nowandthen:1970' %}">1970s</a>
-                        <a href="{% url 'nowandthen:1980' %}">1980s</a>
-                        <a href="{% url 'nowandthen:2010' %}">2010s</a>
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Choose A Decade
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="{% url 'nowandthen:1970' %}">1970s</a>
+                        <a class="dropdown-item" href="{% url 'nowandthen:1980' %}">1980s</a>
+                        <a class="dropdown-item" href="{% url 'nowandthen:2010' %}">2010s</a>
                     </div>
                 </li>
-                <li><a href="{% url 'nowandthen:logout' %}">Logout</a></li>
+                <li>
+                    <a href="{% url 'nowandthen:logout' %}" class="btn btn-danger">Logout</a>
+                </li>
             {% else %}
-                <li><a href="{% url 'nowandthen:register' %}">Sign Up</a></li>
-                <li><a href="{% url 'nowandthen:login' %}">Login</a></li>
+                <li>
+                    <a href="{% url 'nowandthen:register' %}" class="btn btn-success">Sign Up</a>
+                </li>
+                <li>
+                    <a href="{% url 'nowandthen:login' %}" class="btn btn-primary">Login</a>
+                </li>
             {% endif %}
         </ul>
     </nav>

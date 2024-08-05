@@ -147,9 +147,27 @@ def photo10(request):
 
     return render(request, '2010.html', context=context_dict)
 
-
+@login_required
 def search_results(request):
-    return render(request, 'search_results.html')
+    query = request.GET.get('q', '')
+    if query:
+        tags = ImageTag.objects.filter(tag_label__icontains=query)
+        pictures = [tag.picture for tag in tags]
+
+        comment_form = CommentForm()
+        picture_like_form = PictureLikeForm()
+        picture_likes = PictureLike.objects.all()
+
+        tags = ImageTag.objects.all()
+
+        return render(request, 'search_results.html', {
+            'pictures': pictures,
+            'comment_form': comment_form,
+            'picture_like_form': picture_like_form,
+            'picture_likes': picture_likes,
+            'tags': tags,
+            'search_query': query
+        })
 
 @login_required
 def user_logout(request):
