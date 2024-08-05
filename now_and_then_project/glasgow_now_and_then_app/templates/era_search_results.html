@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block body_block %}
+{% load custom_template_tags %}
+<div class="container">
+    <h2>Results for era photo search: {{ search_query }}</h2>
+    {% if pictures %}
+        <div class="row">
+            {% for p in pictures %}
+                {% include '_photo_feed_template_fragment.html' %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <p><strong>No results found.</strong></p>
+    {% endif %}
+</div>
+{% endblock %}

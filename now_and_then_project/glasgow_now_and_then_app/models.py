@@ -7,13 +7,13 @@ class Picture(models.Model):
      user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='pictures')
 
      ERA_CHOICES = [
-          ('Present_day', 'Present Day'),
+          ('present_day', 'Present Day'),
           ('2010-2020', '2010-2020'),
           ('2000-2010', '2000-2010'),
           ('1990s', '1990s'),
           ('1980s', '1980s'),
           ('1970s', '1970s'),
-          ('1960s and earlier', '1960s and earlier')
+          ('1960s_and_earlier', '1960s and earlier')
      ]
 
      user = models.ForeignKey(User, on_delete=models.CASCADE)

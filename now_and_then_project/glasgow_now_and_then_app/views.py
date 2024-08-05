@@ -119,33 +119,6 @@ def photo_feed(request: HttpRequest) -> HttpResponse:
         'tags': tags,
     })
 # For accessing the 1970s photo feed (functionality not completed)
-def photo70(request):
-    picture_list_70 = Picture.objects.filter(era=1970)
-
-    context_dict = {}
-    context_dict['pictures70'] = picture_list_70
-
-    return render(request, '1970.html', context=context_dict)
-
-
-# For accessing the 1980s photo feed (functionality not completed)
-def photo80(request):
-    picture_list_80 = Picture.objects.filter(era=1980)
-
-    context_dict = {}
-    context_dict['pictures80'] = picture_list_80
-
-    return render(request, '1980.html', context=context_dict)
-
-
-# For accessing the 2010s photo feed (functionality not completed)
-def photo10(request):
-    picture_list_10 = Picture.objects.filter(era=2010)
-
-    context_dict = {}
-    context_dict['pictures10'] = picture_list_10
-
-    return render(request, '2010.html', context=context_dict)
 
 @login_required
 def search_results(request):
@@ -167,6 +140,26 @@ def search_results(request):
             'picture_likes': picture_likes,
             'tags': tags,
             'search_query': query
+        })
+
+@login_required
+def era_search_results(request, era):
+    if era:
+        pictures = Picture.objects.filter(era__icontains=era)
+
+        comment_form = CommentForm()
+        picture_like_form = PictureLikeForm()
+        picture_likes = PictureLike.objects.all()
+
+        tags = ImageTag.objects.all()
+
+        return render(request, 'era_search_results.html', {
+            'pictures': pictures,
+            'comment_form': comment_form,
+            'picture_like_form': picture_like_form,
+            'picture_likes': picture_likes,
+            'tags': tags,
+            'search_query': era
         })
 
 @login_required
