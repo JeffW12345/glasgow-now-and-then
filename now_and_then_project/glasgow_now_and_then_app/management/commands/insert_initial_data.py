@@ -35,21 +35,21 @@ class Command(BaseCommand):
           user2 = User.objects.create_user(username='jane_smith', email='jane@example.com', password='password123')
 
           # Create Pictures
-          picture1 = Picture.objects.create(user=user1, image='shared_pics/fireworks.jpg', title='Sunset',
-                                            description='Beautiful sunset at the beach', era='2010-2020')
+          picture1 = Picture.objects.create(user=user1, image='shared_pics/fireworks.jpg', title='Fireworks',
+                                            description='Stunning firework display', era='2010-2020')
           picture2 = Picture.objects.create(user=user2, image='shared_pics/glasgow_cityscape_copy.jpg',
-                                            title='Mountains', description='Snowy mountains', era='2000-2010')
+                                            title='Quintessential Glasgow', description='As title', era='2000-2010')
 
           # Create Comments
-          Comment.objects.create(user=user1, image=picture1, comment_body='Amazing view!')
+          Comment.objects.create(user=user1, image=picture1, comment_body='Amazing!')
           Comment.objects.create(user=user2, image=picture1, comment_body='Superb!')
           Comment.objects.create(user=user2, image=picture2, comment_body='I love this place!')
 
           # Create ImageTags
-          ImageTag.objects.create(picture=picture1, tag_label='nature')
-          ImageTag.objects.create(picture=picture1, tag_label='sunset')
-          ImageTag.objects.create(picture=picture2, tag_label='mountains')
-          ImageTag.objects.create(picture=picture2, tag_label='snow')
+          ImageTag.objects.create(picture=picture1, tag_label='fireworks')
+          ImageTag.objects.create(picture=picture1, tag_label='night')
+          ImageTag.objects.create(picture=picture2, tag_label='Glasgow')
+          ImageTag.objects.create(picture=picture2, tag_label='cityscape')
 
           # Create Likes
           PictureLike.objects.create(user=user1, image=picture2)
