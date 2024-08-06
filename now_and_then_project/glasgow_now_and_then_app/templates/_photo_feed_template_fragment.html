@@ -49,17 +49,21 @@
         </div>
 
         <div class="card-body">
-            {% user_liked_picture picture_likes user p.id as user_already_liked_picture %}
-            <form id="user_likes_form" method="post" action="{% url 'nowandthen:photo_feed' %}">
-                {% csrf_token %}
-                <input type="hidden" name="image_id" value="{{ p.id }}" />
-                <input type="hidden" name="user_id" value="{{ user.id }}" />
-                {% if not user_already_liked_picture %}
-                    <input type="submit" name="add_like" value="Click here to like" class="btn btn-primary" />
-                {% else %}
-                    <p>You already liked this picture.</p>
-                {% endif %}
-            </form>
+            {% if user.is_authenticated %}
+                {% user_liked_picture picture_likes user p.id as user_already_liked_picture %}
+                <form id="user_likes_form" method="post" action="{% url 'nowandthen:photo_feed' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="image_id" value="{{ p.id }}" />
+                    <input type="hidden" name="user_id" value="{{ user.id }}" />
+                    {% if not user_already_liked_picture %}
+                        <input type="submit" name="add_like" value="Click here to like" class="btn btn-primary" />
+                    {% else %}
+                        <p>You already liked this picture.</p>
+                    {% endif %}
+                </form>
+            {% else %}
+                <p>You need to log in to like pictures.</p>
+            {% endif %}
         </div>
 
         <div class="card-body">

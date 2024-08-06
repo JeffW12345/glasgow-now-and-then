@@ -77,7 +77,6 @@ def add_picture(request):
         formset = PictureTagFormSet(queryset=ImageTag.objects.none())
     return render(request, 'add_picture.html', {'form': form, 'formset': formset})
 
-@login_required
 def photo_feed(request: HttpRequest) -> HttpResponse:
     if request.method == 'POST':
         if 'add_comment' in request.POST:
@@ -120,7 +119,6 @@ def photo_feed(request: HttpRequest) -> HttpResponse:
     })
 # For accessing the 1970s photo feed (functionality not completed)
 
-@login_required
 def search_results(request):
     query = request.GET.get('q', '')
     if query:
@@ -142,8 +140,6 @@ def search_results(request):
             'search_query': query
         })
 
-
-@login_required
 def era_search_results(request, era):
     if era:
         era_display_choices = {
@@ -173,8 +169,9 @@ def era_search_results(request, era):
             'tags': tags,
             'search_query': human_readable_era
         })
-        
+
 @login_required
 def user_logout(request):
     logout(request)
+    return render(request, 'logout.html')
     return render(request, 'logout.html')
