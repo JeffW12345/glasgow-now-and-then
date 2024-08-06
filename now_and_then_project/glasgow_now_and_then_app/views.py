@@ -117,8 +117,6 @@ def photo_feed(request: HttpRequest) -> HttpResponse:
         'picture_likes': picture_likes,
         'tags': tags,
     })
-# For accessing the 1970s photo feed (functionality not completed)
-
 def search_results(request):
     query = request.GET.get('q', '')
     if query:

@@ -17,6 +17,8 @@
             </a>
         </div>
 
+        <!-- Displays 'Click for description' message, which reveals description of photo when clicked-->
+
         <div class="card-body">
             <div class="collapse-content">
                 <p class="card-text collapse" id="collapseContent-{{ p.id }}">{{ p.description }}</p>
@@ -27,6 +29,8 @@
                 </a>
             </div>
         </div>
+
+        <!-- Displays the picture's tags-->
 
         <div class="card-body">
             <strong>Tags:</strong>
@@ -48,6 +52,8 @@
             <p>This picture has {{ p.likes_count }} likes</p>
         </div>
 
+        <!-- Messages relating to liking pictures-->
+
         <div class="card-body">
             {% if user.is_authenticated %}
                 {% user_liked_picture picture_likes user p.id as user_already_liked_picture %}
@@ -66,6 +72,8 @@
             {% endif %}
         </div>
 
+        <!-- Signed in users adding comments to photos -->
+
         {% if user.is_authenticated %}
             <div class="card-body">
                 <h2>Have your say!</h2>
@@ -80,6 +88,9 @@
                 </form>
             </div>
         {% endif %}
+
+        <!-- Displays comments (user doesn't have to be logged in to see them) -->
+
             <div class="card-body">
                 {% for comment in p.comments.all %}
                     <p><strong>{{ comment.user.username }}:</strong> {{ comment.comment_body }}</p>
