@@ -1,4 +1,4 @@
-nowandthen.pythonanywhere.com
+[nowandthen.pythonanywhere.com]((nowandthen.pythonanywhere.com))
 
 A site where the people can share local pictures and local stories.
 
