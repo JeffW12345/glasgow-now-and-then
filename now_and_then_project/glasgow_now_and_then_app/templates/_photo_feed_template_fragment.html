@@ -62,30 +62,30 @@
                     {% endif %}
                 </form>
             {% else %}
-                <p>You need to log in to like pictures.</p>
+                <p>You need to log in to like pictures or to comment.</p>
             {% endif %}
         </div>
 
-        <div class="card-body">
-            <h2>Have your say!</h2>
-            <form id="comment_form_{{ p.id }}" method="post" action="{% url 'nowandthen:photo_feed' %}">
-                {% csrf_token %}
-                <input type="hidden" name="image_id" value="{{ p.id }}" />
-                <input type="hidden" name="user_id" value="{{ user.id }}" />
-                <div class="form-group">
-                    <textarea name="comment_body" rows="3" class="form-control" placeholder="Add your comment here..."></textarea>
-                </div>
-                <input type="submit" name="add_comment" value="Submit" class="btn btn-primary" />
-            </form>
-
-            <div>
+        {% if user.is_authenticated %}
+            <div class="card-body">
+                <h2>Have your say!</h2>
+                <form id="comment_form_{{ p.id }}" method="post" action="{% url 'nowandthen:photo_feed' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="image_id" value="{{ p.id }}" />
+                    <input type="hidden" name="user_id" value="{{ user.id }}" />
+                    <div class="form-group">
+                        <textarea name="comment_body" rows="3" class="form-control" placeholder="Add your comment here..."></textarea>
+                    </div>
+                    <input type="submit" name="add_comment" value="Submit" class="btn btn-primary" />
+                </form>
+            </div>
+        {% endif %}
+            <div class="card-body">
                 {% for comment in p.comments.all %}
                     <p><strong>{{ comment.user.username }}:</strong> {{ comment.comment_body }}</p>
                 {% empty %}
                     <p>No comments yet.</p>
                 {% endfor %}
             </div>
-        </div>
     </div>
-    <!-- End Card -->
 </div>
