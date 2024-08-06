@@ -145,7 +145,18 @@ def search_results(request):
 @login_required
 def era_search_results(request, era):
     if era:
+        era_display_choices = {
+            'present_day': 'Present Day',
+            '2010-2020': '2010-2020',
+            '2000-2010': '2000-2010',
+            '1990s': '1990s',
+            '1980s': '1980s',
+            '1970s': '1970s',
+            '1960s_and_earlier': '1960s and earlier'
+        }
         pictures = Picture.objects.filter(era__icontains=era)
+        # Translate the era field to human-readable format
+        human_readable_era = era_display_choices.get(era, era)
 
         comment_form = CommentForm()
         picture_like_form = PictureLikeForm()
@@ -159,7 +170,7 @@ def era_search_results(request, era):
             'picture_like_form': picture_like_form,
             'picture_likes': picture_likes,
             'tags': tags,
-            'search_query': era
+            'search_query': human_readable_era
         })
 
 @login_required
