@@ -114,7 +114,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # New addition
-STATIC_ROOT = BASE_DIR / 'production_files'
+STATIC_ROOT = BASE_DIR / 'static_files'
 
 STATICFILES_DIRS = [
     BASE_DIR / 'glasgow_now_and_then_app/static',
@@ -124,3 +124,7 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Enables serving static files in production (Gunicorn)
+MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
+
